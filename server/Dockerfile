@@ -1,0 +1,12 @@
+# Dockerfile
+FROM ubuntu
+MAINTAINER a-hisame <a.hisame@gmail.com>
+RUN apt-get -y update
+RUN apt-get -y install python python-pip
+RUN pip install boto bottle
+RUN mkdir -p /opt/a-hisame/server
+COPY . /opt/a-hisame/server
+
+CMD python /opt/a-hisame/server/main.py
+
+
