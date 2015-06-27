@@ -20,6 +20,7 @@ def _dish_to_json_dict(order, item):
       item.get('path'))
   return {
     'order': order,
+    'priority': item.get('_cmp', 999999999),
     'name': item.get('name_en'),
     'description': item.get('description', ''),
     'tags': item.get('tags', '').split(','),
@@ -28,33 +29,49 @@ def _dish_to_json_dict(order, item):
 
 def _search_dish(params):
   tab = dynamodb.get_table('dishes')
-  keyword = params.get('keyword', '')
+  keywords = params.get('keyword', '')
   itemfrom = int(params.get('itemfrom', '0'))
   itemto = int(params.get('itemto', '10'))
 
-  names = [ dynamodb.item_to_dict(item) for item in tab.scan(name_en__contains=keyword) ]
-  tags = [ dynamodb.item_to_dict(item) for item in tab.scan(tags__contains=keyword) ]
+  ks = keywords.split(',')
 
-  def _to_cmp(d):
+  allitems = [ dynamodb.item_to_dict(item) for item in tab.scan() ]
+
+
+  def _to_cmp(d, else_value=None):
+    # match names
     name = d.get('name_en', '') 
-    if name == keyword:
+    if name in ks:
       return 0
+    # complete equal: tags
     ts = d.get('tags', '').split(',')
-    if keyword in ts:
-      return 1
-    if name.find(keyword) >= 0:
-      return 2
-    return 3
+    count = 0
+    for keyword in ks:
+      if keyword in ts:
+        count = count + 1
+    if count > 0:
+      return 1 + 50 - int(float(count) / float(len(ts)) * 50)
+
+   # imcomplete equals 
+    count = 0
+    for keyword in ks:
+      if name.find(keyword) >= 0:
+        return 100
+      for tag in ts:
+        if tag.find(keyword) >= 0:
+          count = count + 1
+    if count > 0:
+      return 100 + len(ts) - count
+    # not matched
+    return else_value
   
   results = []
-  ids = set()
-  for dish in (names + tags):
-    id = dish.get('id', None)
-    if id is None or id in ids:
+  for dish in allitems:
+    cmpvalue = _to_cmp(dish)
+    if cmpvalue is None:
       continue
-    dish['_cmp'] = _to_cmp(dish)
+    dish['_cmp'] = cmpvalue
     results.append(dish)
-    ids.add(id)
   
   cmpfunc = lambda a,b: cmp( (a['_cmp'], a.get('name_en')), (b['_cmp'], b.get('name_en')))
   ordered = sorted(results, cmp=cmpfunc)
