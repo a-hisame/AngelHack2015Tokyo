@@ -13,6 +13,7 @@ import dao.dynamodb
 import controller.static
 import controller.index
 import controller.suggest
+import controller.search
 
 
 def _parser():

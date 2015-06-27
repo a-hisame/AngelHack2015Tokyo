@@ -5,6 +5,7 @@
 Use to DynamoDB Layer
 '''
 
+import hashlib
 import logging
 import boto.dynamodb2
 
@@ -38,7 +39,6 @@ def initialize(env, product, access_key=None, secret_access_key=None, region='ap
       conn = boto.dynamodb2.connect_to_region(region)
       _put('conn', conn)
     else:
-      print 'B'
       logging.info(u'Connection create by Configfile')
       conn = boto.dynamodb2.connect_to_region(region,
           aws_access_key_id=access_key,
@@ -67,4 +67,18 @@ def get_table(tablename):
 
 def item_to_dict(item):
   return { k: item[k] for k in item.keys() }
+
+
+def get_env(key, else_value=None, update_force=False, tblname='environment'):
+  tab = get_table(tblname)
+  id = str(hashlib.sha1(key).hexdigest())
+  localkey = 'env.{0}'.format(id)
+  cache = _get(localkey)
+  if cache is not None and update_force is False:
+    return cache
+  if not tab.has_item(id=id):
+    return else_value
+  value = tab.get_item(id=id).get('value')
+  _put(localkey, value)
+  return value
 

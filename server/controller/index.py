@@ -19,4 +19,9 @@ def index():
   ''' return index view '''
   return {}
 
+'''
+@get('/upload')
+@view('upload')
+def upload_image():
+''' 
 

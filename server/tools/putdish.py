@@ -17,13 +17,14 @@ def _parser():
   parser = argparse.ArgumentParser()
   parser.add_argument('--accesskey', type=str, required=False, default=None)
   parser.add_argument('--secretkey', type=str, required=False, default=None)
+  parser.add_argument('--input', type=str, required=True)
   return parser
 
 if __name__ == '__main__':
   args = _parser().parse_args(sys.argv[1:])
   dao.dynamodb.initialize('production', 'bhukha', args.accesskey, args.secretkey)
   tab = dao.dynamodb.get_table('dishes')
-  with codecs.open('dummy.csv', 'r', 'utf-8') as fh:
+  with codecs.open(args.input, 'r', 'utf-8') as fh:
     itr = csv.reader(fh)
     with tab.batch_write() as batch:
       for row in itr:
