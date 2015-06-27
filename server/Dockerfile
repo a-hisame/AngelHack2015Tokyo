@@ -7,6 +7,7 @@ RUN pip install boto bottle
 RUN mkdir -p /opt/a-hisame/server && mkdir -p /var/log/server
 COPY . /opt/a-hisame/server
 
-CMD python /opt/a-hisame/server/main.py >> /var/log/server/server.log
+CMD python /opt/a-hisame/server/main.py >> /var/log/server/server.log 2>&1
+
 
 
