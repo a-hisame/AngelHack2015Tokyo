@@ -31,7 +31,7 @@ def suggest():
 
 @get('/{0}'.format(__CONTEXT_ROOT))
 @get('/{0}/index'.format(__CONTEXT_ROOT))
-@view('views/index')
+@view('index')
 def index():
   ''' return index view '''
   return {}
