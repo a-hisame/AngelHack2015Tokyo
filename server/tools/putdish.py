@@ -27,7 +27,6 @@ if __name__ == '__main__':
     itr = csv.reader(fh)
     with tab.batch_write() as batch:
       for row in itr:
-        print row[0]
         dt = datetime.datetime.now()
         registed = dt.strftime('%Y%m%d%H%M%S.%f')
         id = str(hashlib.sha1('^{0}#{1}$'.format(row[0], registed)).hexdigest())
