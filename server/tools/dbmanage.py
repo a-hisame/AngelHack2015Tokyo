@@ -3,19 +3,15 @@
 
 import sys
 import os
+import csv
+import hashlib
+import codecs
+import datetime
 import argparse
 
-from bottle import run
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 import dao.dynamodb
-import controller.static
-import controller.index
-import controller.suggest
-import controller.search
-import controller.upload
-
 
 def _parser():
   parser = argparse.ArgumentParser()
@@ -26,5 +22,10 @@ def _parser():
 if __name__ == '__main__':
   args = _parser().parse_args(sys.argv[1:])
   dao.dynamodb.initialize('production', 'bhukha', args.accesskey, args.secretkey)
-  run(host='0.0.0.0', port=8080)
+  tab = dao.dynamodb.get_table('dishes')
+
+  with tab.batch_write() as batch:
+    for item in tab.scan():
+      if 'description' not in item.keys():
+        batch.delete_item(id=item['id'])
 

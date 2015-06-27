@@ -4,6 +4,8 @@
 '''
 '''
 
+import os
+import hashlib
 import json
 import bottle
 from bottle import route, run, view, static_file, template
@@ -18,10 +20,4 @@ __CONTEXT_ROOT = 'hungry'
 def index():
   ''' return index view '''
   return {}
-
-'''
-@get('/upload')
-@view('upload')
-def upload_image():
-''' 
 
