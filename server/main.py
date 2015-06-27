@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import controller.static
 import controller.index
+import controller.suggest
 
 
 if __name__ == '__main__':
