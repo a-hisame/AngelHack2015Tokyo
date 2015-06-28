@@ -28,13 +28,13 @@ def _get_restaurant(params, else_value=None):
   }
 
 
-@get('/{0}/api/search/restaurant'.format(__CONTEXT_ROOT))
+@get('/{0}/api/restaurant'.format(__CONTEXT_ROOT))
 def get_search_restaurant():
   result = _get_restaurant(dict(request.query.decode()))
   response.content_type = 'application/json'
   return result 
 
-@post('/{0}/api/search/restaurant'.format(__CONTEXT_ROOT))
+@post('/{0}/api/restaurant'.format(__CONTEXT_ROOT))
 def get_search_restaurant():
   result = _get_restaurant(dict(request.forms.decode()))
   response.content_type = 'application/json'
