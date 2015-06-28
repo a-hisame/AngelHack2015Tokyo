@@ -17,6 +17,9 @@ import controller.index
 import controller.suggest
 import controller.search
 import controller.upload
+import controller.dish
+import controller.restaurant
+
 
 
 def _parser():
