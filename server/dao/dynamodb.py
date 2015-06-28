@@ -6,6 +6,7 @@ Use to DynamoDB Layer
 '''
 
 import hashlib
+import datetime
 import logging
 import boto.dynamodb2
 
@@ -81,4 +82,32 @@ def get_env(key, else_value=None, update_force=False, tblname='environment'):
   value = tab.get_item(id=id).get('value')
   _put(localkey, value)
   return value
+
+
+def update_new_tags(tags):
+  tab = get_table('tags')
+  for tag in tags.split(','):
+    if tag in ['', None]:
+      continue
+    tag = tag.lower()
+    id = str(hashlib.sha1(tag).hexdigest())
+    if tab.has_item(id=id):
+      continue
+    tab.put_item(data={'id': id, 'name_en': tag})
+
+
+def put_dish(name_en, description, restaurant, tags, imagepath):
+  registed = datetime.datetime.now().strftime('%Y%m%d%H%M%S.%f')
+  id = str(hashlib.sha1('^{0}#{1}$'.format(name_en, registed)).hexdigest())
+  tab = get_table('dishes')
+  update_new_tags(tags)
+  tab.put_item(data={
+      'id': id,
+      'name_en': name_en,
+      'description': description,
+      'restaurant': restaurant,
+      'tags': tags,
+      'path': imagepath,
+      'registed': registed,
+   })
 
