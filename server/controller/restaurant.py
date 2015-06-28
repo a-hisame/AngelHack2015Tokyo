@@ -43,7 +43,7 @@ def get_search_restaurant():
 
 def _restaurant_namelist(params):
   dishes = dynamodb.get_table('dishes')
-  restaurant_name = params.get('restaurant')
+  restaurant_name = params.get('keyword')
   if restaurant_name is None:
     return []
 
