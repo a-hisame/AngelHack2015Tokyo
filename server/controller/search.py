@@ -74,7 +74,16 @@ def _search_dish(params):
     results.append(dish)
   
   cmpfunc = lambda a,b: cmp( (a['_cmp'], a.get('name_en')), (b['_cmp'], b.get('name_en')))
-  ordered = sorted(results, cmp=cmpfunc)
+  ordered = []
+  setnames = set()
+  for item in sorted(results, cmp=cmpfunc):
+    if item.get('name_en') in setnames:
+      continue
+    name = item.get('name_en', '')
+    if name is '':
+      continue
+    ordered.append(item)
+    setnames.add(name)
   
   return {
     'result': [_dish_to_json_dict(itemfrom + idx, item) for (idx, item) in enumerate(ordered[itemfrom:itemto]) ],
