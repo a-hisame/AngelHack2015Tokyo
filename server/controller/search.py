@@ -20,6 +20,7 @@ def _dish_to_json_dict(order, item):
       item.get('path'))
   return {
     'order': order,
+    'id': item.get('id', ''),
     'priority': item.get('_cmp', 999999999),
     'name': item.get('name_en'),
     'description': item.get('description', ''),
@@ -33,7 +34,7 @@ def _search_dish(params):
   itemfrom = int(params.get('itemfrom', '0'))
   itemto = int(params.get('itemto', '10'))
 
-  ks = keywords.split(',')
+  ks = filter(lambda s: s not in ['', None], keywords.split(','))
 
   allitems = [ dynamodb.item_to_dict(item) for item in tab.scan() ]
 

@@ -25,11 +25,11 @@
 * /[ContextRoot]/api/search/restaurant?keyword=: search registed restaurant list
 * /[ContextRoot]/api/restaurant?name=: get information of single restaurant which name matched
 * /[ContextRoot]/api/upload: upload dishes information (see pages upload form paramters)
-
-
+* /[ContextRoot]/api/dish?id=: get information of single dish which name matched
+* /[ContextRoot]/api/dish/images?name=: get dish image candidates url(s)
+=
 #### Not Implemented
 
-* /[ContextRoot]/api/dish?name=: get information of single dish which name matched
 * /[ContextRoot]/api/suggest/restaurang?keyword: suggestion restaurant
 
 

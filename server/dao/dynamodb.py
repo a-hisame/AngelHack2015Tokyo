@@ -101,12 +101,13 @@ def put_dish(name_en, description, restaurant, tags, imagepath):
   id = str(hashlib.sha1('^{0}#{1}$'.format(name_en, registed)).hexdigest())
   tab = get_table('dishes')
   update_new_tags(tags)
+  editedtags = filter(lambda s: s not in ['', None], [ tag.sprit() for tag in tags.split(',')])
   tab.put_item(data={
       'id': id,
       'name_en': name_en,
       'description': description,
       'restaurant': restaurant,
-      'tags': tags,
+      'tags': ','.join(editedtags),
       'path': imagepath,
       'registed': registed,
    })
